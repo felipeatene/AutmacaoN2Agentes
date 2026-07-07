@@ -1,0 +1,48 @@
+{
+  "id": "vpn-connectivity",
+  "name": "Diagnóstico e Resolução de Problemas de VPN",
+  "description": "Procedimento padrão para problemas de conectividade VPN corporativa.",
+  "triggers": [
+    "vpn",
+    "tunnel",
+    "conexão vpn",
+    "vpn caiu",
+    "vpn desconectado",
+    "não consigo conectar vpn",
+    "vpn não funciona",
+    "acesso remoto",
+    "remote access",
+    "cisco anyconnect",
+    "globalprotect"
+  ],
+  "category": "vpn",
+  "close_code": "Solved (Permanently)",
+  "resolution_notes": "Problema de VPN diagnosticado e orientações fornecidas conforme SOP-002.",
+  "steps": [
+    {
+      "action": "add_note",
+      "value": "SOP-002: Problema de VPN identificado. Iniciando diagnóstico automatizado."
+    },
+    {
+      "action": "set_field",
+      "field": "category",
+      "value": "Network"
+    },
+    {
+      "action": "set_field",
+      "field": "subcategory",
+      "value": "VPN"
+    },
+    {
+      "action": "add_note",
+      "value": "SOP-002: Passos de diagnóstico recomendados: 1) Verificar credenciais VPN. 2) Reiniciar cliente VPN. 3) Verificar conectividade de rede local. 4) Limpar cache DNS (ipconfig /flushdns). 5) Reinstalar cliente VPN se necessário."
+    },
+    {
+      "action": "add_note",
+      "value": "SOP-002: Orientações enviadas ao usuário. Ticket será monitorado por 4 horas para confirmação de resolução."
+    },
+    {
+      "action": "close"
+    }
+  ]
+}
