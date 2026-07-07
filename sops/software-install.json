@@ -1,0 +1,44 @@
+{
+  "id": "software-install",
+  "name": "Instalação de Software Aprovado",
+  "description": "Procedimento para solicitações de instalação de software aprovado no catálogo corporativo.",
+  "triggers": [
+    "instalar",
+    "instalação",
+    "install",
+    "software",
+    "aplicativo",
+    "aplicação",
+    "programa",
+    "licença",
+    "license"
+  ],
+  "category": "software",
+  "close_code": "Solved (Permanently)",
+  "resolution_notes": "Solicitação de instalação de software roteada para equipe EUC conforme SOP-003.",
+  "steps": [
+    {
+      "action": "add_note",
+      "value": "SOP-003: Solicitação de instalação de software identificada. Verificando catálogo de software aprovado."
+    },
+    {
+      "action": "set_field",
+      "field": "category",
+      "value": "Software"
+    },
+    {
+      "action": "set_field",
+      "field": "subcategory",
+      "value": "Installation"
+    },
+    {
+      "action": "set_field",
+      "field": "assignment_group",
+      "value": "End User Computing"
+    },
+    {
+      "action": "add_note",
+      "value": "SOP-003: Ticket roteado para equipe End User Computing para validação e execução da instalação. Prazo esperado: 1 dia útil."
+    }
+  ]
+}
