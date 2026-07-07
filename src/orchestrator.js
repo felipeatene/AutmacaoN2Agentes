@@ -65,7 +65,7 @@ function classifyIncident(incident) {
  * @param {object} incident - Objeto do incidente.
  * @returns {boolean} True se o contexto é suficiente.
  */
-function hassufficientContext(incident) {
+function hasSufficientContext(incident) {
   const desc = incident.description || '';
   const shortDesc = incident.short_description || '';
   return desc.length >= 20 || shortDesc.length >= 10;
@@ -126,7 +126,7 @@ export async function processIncident(incident, sops, config) {
   const { category, routing } = classifyIncident(incident);
 
   // Verificar se há contexto suficiente para roteamento
-  if (!hassufficientContext(incident)) {
+  if (!hasSufficientContext(incident)) {
     // Solicitar contexto adicional via Teams
     logger.info('Contexto insuficiente. Solicitando informações adicionais via Teams.', {
       skill: 'orchestrator',
