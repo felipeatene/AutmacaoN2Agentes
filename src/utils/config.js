@@ -7,7 +7,6 @@
  */
 
 import { logger } from './logger.js';
-import { resolveSessionCachePath } from '../snow/session-store.js';
 
 /** Variáveis obrigatórias para operação do agente (conforme constitution.md). */
 const REQUIRED_ENV_VARS = [
@@ -64,27 +63,6 @@ function buildSnowProfile(prefix) {
 }
 
 /**
- * Resolve modo de autenticação WRITE (oauth, basic ou session).
- *
- * @returns {'oauth'|'basic'|'session'}
- */
-export function resolveWriteAuthMode() {
-  const explicit = process.env.SNOW_WRITE_AUTH_MODE;
-  if (explicit === 'session' || explicit === 'oauth' || explicit === 'basic') {
-    return explicit;
-  }
-
-  const write = buildSnowProfile('WRITE');
-  if (write.clientId && write.clientSecret) {
-    return 'oauth';
-  }
-  if (write.username && write.password) {
-    return 'basic';
-  }
-  return 'session';
-}
-
-/**
  * Valida a presença de todas as variáveis de ambiente obrigatórias.
  *
  * @throws {Error} Se alguma variável obrigatória estiver ausente.
@@ -101,9 +79,7 @@ export function validateConfig() {
   }
 
   const hasReadAuth = hasAnyCompleteAuthGroup(SNOW_READ_AUTH_GROUPS);
-  const writeAuthMode = resolveWriteAuthMode();
-  const hasWriteAuth =
-    writeAuthMode === 'session' || hasAnyCompleteAuthGroup(SNOW_WRITE_AUTH_GROUPS);
+  const hasWriteAuth = hasAnyCompleteAuthGroup(SNOW_WRITE_AUTH_GROUPS);
 
   if (!hasReadAuth) {
     logger.error(
@@ -117,7 +93,7 @@ export function validateConfig() {
   if (!hasWriteAuth) {
     logger.error(
       'Nenhum método de autenticação ServiceNow WRITE configurado. ' +
-        'Configure SNOW_WRITE_* , SNOW_WRITE_AUTH_MODE=session ou credenciais legadas SNOW_*.',
+        'Configure SNOW_WRITE_* (OAuth/Basic) ou credenciais legadas SNOW_*.',
       { skill: 'config-validator' }
     );
     process.exit(1);
@@ -133,11 +109,7 @@ export function validateConfig() {
  */
 export function getConfig() {
   const snowRead = buildSnowProfile('READ');
-  const snowWrite = {
-    ...buildSnowProfile('WRITE'),
-    authMode: resolveWriteAuthMode(),
-    sessionCachePath: resolveSessionCachePath(),
-  };
+  const snowWrite = buildSnowProfile('WRITE');
 
   const extraGroups = (process.env.SNOW_EXTRA_ASSIGNMENT_GROUPS || '')
     .split(',')

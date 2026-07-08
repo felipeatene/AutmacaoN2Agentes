@@ -5,12 +5,10 @@
  * - Pilar 1: Falha Rápida — erros de autenticação e rede suspendem o ciclo.
  * - Pilar 2: Idempotência — consultas de leitura sempre precedem escritas.
  *
- * Suporta perfis de autenticação separados (read/write) com OAuth2, Basic Auth ou sessão browser.
+ * Suporta perfis de autenticação separados (read/write) com OAuth2 ou Basic Auth (M2M).
  */
 
 import { logger } from '../utils/logger.js';
-import { buildCookieHeader, loadSession } from './session-store.js';
-import { snowFetch } from './fetch.js';
 
 /** @type {Map<string, { token: string|null, expiresAt: number }>} */
 const oauthTokens = new Map();
@@ -53,7 +51,7 @@ async function getOAuthToken(config, profileKey) {
     client_secret: config.clientSecret,
   });
 
-  const response = await snowFetch(`${config.instanceUrl}/oauth_token.do`, {
+  const response = await fetch(`${config.instanceUrl}/oauth_token.do`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),
@@ -167,12 +165,6 @@ export async function snowRequest(method, path, config, options = {}, retryCount
   if (requestAuth.authorization) {
     fetchOptions.headers.Authorization = requestAuth.authorization;
   }
-  if (requestAuth.cookie) {
-    fetchOptions.headers.Cookie = requestAuth.cookie;
-  }
-  if (requestAuth.xUserToken) {
-    fetchOptions.headers['X-UserToken'] = requestAuth.xUserToken;
-  }
 
   if (options.body) {
     fetchOptions.body = JSON.stringify(options.body);
@@ -180,7 +172,7 @@ export async function snowRequest(method, path, config, options = {}, retryCount
 
   let response;
   try {
-    response = await snowFetch(url.toString(), fetchOptions);
+    response = await fetch(url.toString(), fetchOptions);
   } catch (networkError) {
     logger.error('Erro de rede ao conectar com ServiceNow. Suspendendo ciclo.', {
       skill: 'snow-client',
@@ -204,11 +196,6 @@ export async function snowRequest(method, path, config, options = {}, retryCount
   }
 
   if (response.status === 401 || response.status === 403) {
-    const sessionHint =
-      requestAuth.authMode === 'session'
-        ? ' Sessão expirada. Modo M2M deve ser usado, configure credenciais no .env.'
-        : '';
-
     logger.error('Erro de autenticação ServiceNow. Suspendendo ciclo.', {
       skill: 'snow-client',
       method,
@@ -217,7 +204,10 @@ export async function snowRequest(method, path, config, options = {}, retryCount
       auth_mode: requestAuth.authMode,
       http_status: response.status,
     });
-    throw new Error(`ServiceNow authentication error: HTTP ${response.status}.${sessionHint}`);
+    throw new Error(
+      `ServiceNow authentication error: HTTP ${response.status}. ` +
+        'Verifique as credenciais M2M (OAuth/Basic) no .env; acione o responsável para rotação.'
+    );
   }
 
   if (!response.ok) {

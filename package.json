@@ -12,7 +12,6 @@
     "test": "node --test tests/*.test.js",
     "test:watch": "node --test --watch tests/",
     "snow:import-postman": "node scripts/import-postman-collection.js",
-    "snow:import-login-sequence": "node scripts/import-login-sequence.js",
     "snow:queues": "node scripts/snow-resolve-queues.js",
     "snow:process-incident": "node scripts/snow-process-incident.js"
   },
@@ -28,6 +27,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "overrides": {
+    "uuid": "^11.1.1"
+  },
   "dependencies": {
     "botbuilder": "^4.23.1",
     "dotenv": "^16.4.5",
