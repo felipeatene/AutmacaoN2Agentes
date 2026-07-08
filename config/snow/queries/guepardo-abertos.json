@@ -1,0 +1,12 @@
+{
+  "id": "guepardo-abertos",
+  "name": "Guepardo: Abertos",
+  "table": "incident",
+  "method": "GET",
+  "path": "/api/now/table/incident",
+  "sysparm_query": "stateNOT IN15,6,7,503^u_qs_type=Incident^assignment_group=25f28e6a87363a98ed9e85930cbb3518^assignment_group=25f28e6a87363a98ed9e85930cbb3518^u_report_systems_failure=2b6769c087b63e506de663930cbb3594",
+  "params": {
+    "sysparm_count": "true"
+  },
+  "description": "Incidentes abertos do Guepardo — stateNOT IN 15,6,7,503, tipo Incident, grupo e sistema de falha específicos."
+}

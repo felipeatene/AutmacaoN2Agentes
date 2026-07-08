@@ -1,5 +1,5 @@
 /**
- * Gerenciamento de Tags ServiceNow via label_entry — Agente N2
+ * Gerenciamento de Tags ServiceNow via label_entry — Lino
  *
  * Conforme constitution.md Pilar 2 (Idempotência Absoluta) e plan.md seção 5.3:
  * - Tags NÃO devem ser aplicadas via sys_tags (campo M:N derivado — falha silenciosa).
@@ -19,6 +19,7 @@ import { logger } from '../utils/logger.js';
  */
 export async function findLabelByName(labelName, config) {
   const response = await snowRequest('GET', '/api/now/table/label', config, {
+    authProfile: 'read',
     params: {
       sysparm_query: `name=${encodeURIComponent(labelName)}`,
       sysparm_fields: 'sys_id,name',
@@ -56,6 +57,7 @@ export async function labelEntryExists(incidentSysId, labelSysId, config) {
   ].join('^');
 
   const response = await snowRequest('GET', '/api/now/table/label_entry', config, {
+    authProfile: 'read',
     params: {
       sysparm_query: query,
       sysparm_fields: 'sys_id',
@@ -111,6 +113,7 @@ export async function applyTag(incidentSysId, labelName, config) {
 
   // Passo 3: Inserir nova entrada
   await snowRequest('POST', '/api/now/table/label_entry', config, {
+    authProfile: 'write',
     body: {
       table: 'incident',
       table_key: incidentSysId,

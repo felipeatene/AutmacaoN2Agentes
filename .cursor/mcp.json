@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "servicenow-read": {
+      "command": "npx",
+      "args": ["-y", "@servicenow/mcp-server"],
+      "env": {
+        "SNOW_INSTANCE_URL": "${env:SNOW_READ_INSTANCE_URL}",
+        "SNOW_USERNAME": "${env:SNOW_READ_USERNAME}",
+        "SNOW_PASSWORD": "${env:SNOW_READ_PASSWORD}",
+        "SNOW_CLIENT_ID": "${env:SNOW_READ_CLIENT_ID}",
+        "SNOW_CLIENT_SECRET": "${env:SNOW_READ_CLIENT_SECRET}"
+      }
+    },
+    "servicenow-write": {
+      "command": "npx",
+      "args": ["-y", "@servicenow/mcp-server"],
+      "env": {
+        "SNOW_INSTANCE_URL": "${env:SNOW_WRITE_INSTANCE_URL}",
+        "SNOW_USERNAME": "${env:SNOW_WRITE_USERNAME}",
+        "SNOW_PASSWORD": "${env:SNOW_WRITE_PASSWORD}",
+        "SNOW_CLIENT_ID": "${env:SNOW_WRITE_CLIENT_ID}",
+        "SNOW_CLIENT_SECRET": "${env:SNOW_WRITE_CLIENT_SECRET}"
+      }
+    }
+  }
+}

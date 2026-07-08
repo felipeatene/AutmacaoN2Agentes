@@ -1,67 +1,102 @@
 /**
- * Operações de Incidentes ServiceNow — Agente N2
+ * Operações de Incidentes ServiceNow — Lino
  *
  * Conforme constitution.md:
  * - Pilar 2: Verifica estado atual antes de qualquer escrita (idempotência).
- * - Query cirúrgica para evitar processamento redundante.
+ * - Query cirúrgica via n2-poll.json para evitar processamento redundante.
  */
 
 import { snowRequest } from './client.js';
+import { loadQuery, buildPollParams } from './queries.js';
 import { logger } from '../utils/logger.js';
 import { randomUUID } from 'node:crypto';
 
-/** Campos retornados nas queries de incidente (minimiza payload). */
-const INCIDENT_FIELDS = [
-  'sys_id',
-  'number',
-  'short_description',
-  'description',
-  'state',
-  'incident_state',
-  'assigned_to',
-  'assignment_group',
-  'caller_id',
-  'sys_updated_on',
-  'close_code',
-  'work_notes',
-  'u_aad_object_id',
-].join(',');
+/**
+ * Extrai valor de campo ServiceNow (suporta display_value=all).
+ *
+ * @param {unknown} field
+ * @returns {string|null}
+ */
+export function extractFieldValue(field) {
+  if (field == null || field === '') return null;
+  if (typeof field === 'object' && field.value !== undefined) {
+    return field.value || null;
+  }
+  return String(field);
+}
 
 /**
- * Busca incidentes ativos, sem atribuição, atualizados nos últimos N minutos.
+ * Extrai AAD object ID do caller a partir de display values.
  *
- * Query conforme plan.md seção 5.2:
- * active=true^assigned_to=EMPTY^sys_updated_on>javascript:gs.minutesAgo(2)
+ * @param {object} incident
+ * @returns {string|null}
+ */
+export function extractCallerAadObjectId(incident) {
+  const direct = extractFieldValue(incident.u_aad_object_id);
+  if (direct) return direct;
+
+  const caller = incident.caller_id;
+  if (!caller) return null;
+
+  if (typeof caller === 'object') {
+    const fromCaller = extractFieldValue(caller.u_aad_object_id);
+    if (fromCaller) return fromCaller;
+  }
+
+  return null;
+}
+
+/**
+ * Normaliza incidente com display_value=all para formato interno.
  *
- * @param {object} config - Configuração ServiceNow.
+ * @param {object} raw
+ * @returns {object}
+ */
+export function normalizeIncident(raw) {
+  return {
+    ...raw,
+    sys_id: extractFieldValue(raw.sys_id) || raw.sys_id,
+    number: extractFieldValue(raw.number) || raw.number,
+    state: extractFieldValue(raw.state) || raw.state,
+    incident_state: extractFieldValue(raw.incident_state) || raw.incident_state,
+    assigned_to: extractFieldValue(raw.assigned_to),
+    assignment_group: extractFieldValue(raw.assignment_group),
+    caller_id: {
+      sys_id: extractFieldValue(raw.caller_id) || (typeof raw.caller_id === 'object' ? raw.caller_id?.value : raw.caller_id),
+      display_value:
+        typeof raw.caller_id === 'object' ? raw.caller_id?.display_value : null,
+      u_aad_object_id: extractCallerAadObjectId(raw),
+    },
+    u_aad_object_id: extractCallerAadObjectId(raw),
+  };
+}
+
+/**
+ * Busca incidentes para polling N2 usando query de config/snow/queries/n2-poll.json.
+ *
+ * @param {object} config - Configuração ServiceNow (com perfis read/write).
  * @param {number} [minutesAgo=2] - Janela de tempo em minutos.
  * @param {number} [limit=50] - Máximo de tickets retornados.
- * @returns {Promise<object[]>} Lista de incidentes.
+ * @param {string[]} [assignmentGroupSysIds=[]] - sys_ids para filtro assignment_groupIN.
+ * @returns {Promise<object[]>} Lista de incidentes normalizados.
  */
-export async function pollIncidents(config, minutesAgo = 2, limit = 50) {
+export async function pollIncidents(config, minutesAgo = 2, limit = 50, assignmentGroupSysIds = []) {
   logger.info('Iniciando polling de incidentes ServiceNow.', {
     skill: 'snow-poll-incidents',
     minutes_ago: minutesAgo,
     limit,
+    assignment_groups: assignmentGroupSysIds.length,
   });
 
-  const query = [
-    'active=true',
-    'assigned_to=EMPTY',
-    `sys_updated_on>javascript:gs.minutesAgo(${minutesAgo})`,
-  ].join('^');
+  const queryConfig = await loadQuery('n2-poll');
+  const params = buildPollParams(queryConfig, { minutesAgo, assignmentGroupSysIds, limit });
 
   const response = await snowRequest('GET', '/api/now/table/incident', config, {
-    params: {
-      sysparm_query: query,
-      sysparm_fields: INCIDENT_FIELDS,
-      sysparm_limit: String(limit),
-      sysparm_display_value: 'false',
-      sysparm_exclude_reference_link: 'true',
-    },
+    authProfile: 'read',
+    params,
   });
 
-  const incidents = response?.result || [];
+  const incidents = (response?.result || []).map(normalizeIncident);
 
   logger.info('Polling concluído.', {
     skill: 'snow-poll-incidents',
@@ -79,18 +114,21 @@ export async function pollIncidents(config, minutesAgo = 2, limit = 50) {
  * @returns {Promise<object>} Incidente atual.
  */
 export async function getIncident(sysId, config) {
+  const queryConfig = await loadQuery('n2-poll');
+  const fields = queryConfig.fields?.join(',') || 'sys_id,number,state,incident_state';
+
   const response = await snowRequest('GET', `/api/now/table/incident/${sysId}`, config, {
+    authProfile: 'read',
     params: {
-      sysparm_fields: INCIDENT_FIELDS,
-      sysparm_display_value: 'false',
+      sysparm_fields: fields,
+      sysparm_display_value: 'all',
     },
   });
-  return response?.result;
+  return normalizeIncident(response?.result || {});
 }
 
 /**
  * Adiciona uma work note ao incidente.
- * Conforme constitution.md Pilar 2: inclui execution_id para auditoria.
  *
  * @param {string} sysId - sys_id do incidente.
  * @param {string} note - Conteúdo da work note.
@@ -102,6 +140,7 @@ export async function addWorkNote(sysId, note, executionId, config) {
   const noteWithAudit = `[execution_id:${executionId}] ${note}`;
 
   await snowRequest('PATCH', `/api/now/table/incident/${sysId}`, config, {
+    authProfile: 'write',
     body: { work_notes: noteWithAudit },
   });
 
@@ -115,8 +154,6 @@ export async function addWorkNote(sysId, note, executionId, config) {
 /**
  * Resolve um incidente (fecha com código de resolução).
  *
- * Conforme constitution.md Pilar 2: verifica estado atual antes de fechar.
- *
  * @param {string} sysId - sys_id do incidente.
  * @param {string} resolutionNotes - Notas de resolução.
  * @param {string} closeCode - Código de fechamento ServiceNow.
@@ -125,10 +162,9 @@ export async function addWorkNote(sysId, note, executionId, config) {
  * @returns {Promise<boolean>} True se fechado com sucesso, false se já estava fechado.
  */
 export async function resolveIncident(sysId, resolutionNotes, closeCode, executionId, config) {
-  // Verificação de idempotência: não fechar ticket já fechado
   const current = await getIncident(sysId, config);
 
-  if (!current) {
+  if (!current?.sys_id) {
     logger.warn('Incidente não encontrado para resolução.', {
       skill: 'snow-resolve-incident',
       sys_id: sysId,
@@ -148,6 +184,7 @@ export async function resolveIncident(sysId, resolutionNotes, closeCode, executi
   const noteWithAudit = `[execution_id:${executionId}] Resolvido automaticamente via SOP.\n${resolutionNotes}`;
 
   await snowRequest('PATCH', `/api/now/table/incident/${sysId}`, config, {
+    authProfile: 'write',
     body: {
       incident_state: '6',
       state: '6',
@@ -183,6 +220,7 @@ export async function routeIncident(sysId, assignmentGroupSysId, category, execu
     `Categoria: ${category}.`;
 
   await snowRequest('PATCH', `/api/now/table/incident/${sysId}`, config, {
+    authProfile: 'write',
     body: {
       assignment_group: assignmentGroupSysId,
       category,

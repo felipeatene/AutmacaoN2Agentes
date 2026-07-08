@@ -201,7 +201,7 @@ adapter.createConversation(conversationRef, async (context) => {
 ## 7. Estrutura de Diretórios
 
 ```
-AutmacaoN2Agentes/
+lino/
 ├── constitution.md          # Regras imutáveis do sistema
 ├── spec.md                  # Requisitos e critérios de aceitação
 ├── plan.md                  # Este arquivo: arquitetura técnica

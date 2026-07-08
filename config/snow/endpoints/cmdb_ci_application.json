@@ -1,0 +1,52 @@
+{
+  "table": "cmdb_ci_application",
+  "label": "cmdb_ci_application",
+  "description": "Tabela: cmdb_ci_application\nLabel: cmdb_ci_application\nCampos (top 10): n/d\nReferências: 0 campos",
+  "requests": [
+    {
+      "name": "UI Meta",
+      "method": "GET",
+      "path": "/api/now/ui/meta/cmdb_ci_application",
+      "query": {},
+      "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+    },
+    {
+      "name": "Sys Dictionary",
+      "method": "GET",
+      "path": "/api/now/table/sys_dictionary?sysparm_query=name=cmdb_ci_application&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+      "query": {
+        "sysparm_query": "name=cmdb_ci_application",
+        "sysparm_fields": "element,label,internal_type,reference",
+        "sysparm_limit": "1000"
+      },
+      "description": "Lista definição das colunas via sys_dictionary"
+    },
+    {
+      "name": "Table API: Lista 10",
+      "method": "GET",
+      "path": "/api/now/table/cmdb_ci_application?sysparm_limit=10&sysparm_display_value=all",
+      "query": {
+        "sysparm_limit": "10",
+        "sysparm_display_value": "all"
+      },
+      "description": "Lista 10 registros com display_value=all"
+    },
+    {
+      "name": "Table API: Sample 1",
+      "method": "GET",
+      "path": "/api/now/table/cmdb_ci_application?sysparm_limit=1&sysparm_display_value=all",
+      "query": {
+        "sysparm_limit": "1",
+        "sysparm_display_value": "all"
+      },
+      "description": "Retorna 1 registro para inferir colunas"
+    },
+    {
+      "name": "Table API: Get por sys_id",
+      "method": "GET",
+      "path": "/api/now/table/cmdb_ci_application/{{sys_id}}",
+      "query": {},
+      "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+    }
+  ]
+}

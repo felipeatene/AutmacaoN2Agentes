@@ -1,0 +1,52 @@
+{
+  "table": "incident",
+  "label": "Incident",
+  "description": "Tabela: incident\nLabel: Incident\nCampos (top 10): parent, u_provider_ticket, u_qs_times_reassigned, u_incident_exposure_time, x_126749_aws_sc_awsstatus, caused_by, watch_list, sys_updated_on, u_impacted_groups, skills\nReferências: 55 campos",
+  "requests": [
+    {
+      "name": "UI Meta",
+      "method": "GET",
+      "path": "/api/now/ui/meta/incident",
+      "query": {},
+      "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+    },
+    {
+      "name": "Sys Dictionary",
+      "method": "GET",
+      "path": "/api/now/table/sys_dictionary?sysparm_query=name=incident&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+      "query": {
+        "sysparm_query": "name=incident",
+        "sysparm_fields": "element,label,internal_type,reference",
+        "sysparm_limit": "1000"
+      },
+      "description": "Lista definição das colunas via sys_dictionary"
+    },
+    {
+      "name": "Guepardo: Abertos",
+      "method": "GET",
+      "path": "/api/now/table/incident?sysparm_query=stateNOT%20IN15%2C6%2C7%2C503%5Eu_qs_type%3DIncident%5Eassignment_group%3D25f28e6a87363a98ed9e85930cbb3518%5Eassignment_group%3D25f28e6a87363a98ed9e85930cbb3518%5Eu_report_systems_failure%3D2b6769c087b63e506de663930cbb3594&sysparm_count=true",
+      "query": {
+        "sysparm_query": "stateNOT%20IN15%2C6%2C7%2C503%5Eu_qs_type%3DIncident%5Eassignment_group%3D25f28e6a87363a98ed9e85930cbb3518%5Eassignment_group%3D25f28e6a87363a98ed9e85930cbb3518%5Eu_report_systems_failure%3D2b6769c087b63e506de663930cbb3594",
+        "sysparm_count": "true"
+      },
+      "description": "Lista 10 registros com display_value=all"
+    },
+    {
+      "name": "Table API: Sample 1",
+      "method": "GET",
+      "path": "/api/now/table/incident?sysparm_limit=1&sysparm_display_value=all",
+      "query": {
+        "sysparm_limit": "1",
+        "sysparm_display_value": "all"
+      },
+      "description": "Retorna 1 registro para inferir colunas"
+    },
+    {
+      "name": "Table API: Get por sys_id",
+      "method": "GET",
+      "path": "/api/now/table/incident/{{sys_id}}",
+      "query": {},
+      "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+    }
+  ]
+}

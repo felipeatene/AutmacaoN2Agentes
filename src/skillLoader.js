@@ -1,14 +1,13 @@
 /**
- * Carregador e Validador de Skills — Agente N2
+ * Carregador e Validador de Skills — Lino
  *
  * Conforme constitution.md Pilar 3 (Isolamento de Execução):
  * - Valida YAML frontmatter antes de qualquer execução.
- * - Rejeita skills sem `requires.env` ou `requires.bins` definidos.
+ * - Carrega de skills/ (runtime) e .cursor/skills/{name}/SKILL.md (Cursor).
  * - Verifica presença de variáveis de ambiente e binários antes de aprovar execução.
- * - Separa skills de leitura (read) de skills de escrita (write).
  */
 
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { execSync } from 'node:child_process';
 import yaml from 'js-yaml';
@@ -18,11 +17,30 @@ import { logger } from './utils/logger.js';
 const REQUIRED_FRONTMATTER_FIELDS = ['name', 'description', 'version', 'requires', 'actions'];
 
 /**
+ * Verifica se um binário está disponível no PATH (Windows e Unix).
+ *
+ * @param {string} bin - Nome do binário.
+ * @returns {boolean}
+ */
+function isBinAvailable(bin) {
+  try {
+    if (process.platform === 'win32') {
+      execSync(`where ${bin}`, { stdio: 'ignore' });
+    } else {
+      execSync(`command -v ${bin}`, { stdio: 'ignore', shell: '/bin/sh' });
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Analisa o YAML frontmatter de um arquivo SKILL.md.
  *
  * @param {string} content - Conteúdo completo do arquivo SKILL.md.
  * @param {string} filePath - Caminho do arquivo (para logs de erro).
- * @returns {{ frontmatter: object, body: string } | null} Frontmatter parseado e corpo, ou null se inválido.
+ * @returns {{ frontmatter: object, body: string } | null}
  */
 function parseFrontmatter(content, filePath) {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
@@ -51,9 +69,9 @@ function parseFrontmatter(content, filePath) {
 /**
  * Valida se o frontmatter de uma skill contém todos os campos obrigatórios.
  *
- * @param {object} frontmatter - Objeto YAML parseado.
- * @param {string} filePath - Caminho do arquivo (para logs).
- * @returns {boolean} True se válido.
+ * @param {object} frontmatter
+ * @param {string} filePath
+ * @returns {boolean}
  */
 function validateFrontmatter(frontmatter, filePath) {
   for (const field of REQUIRED_FRONTMATTER_FIELDS) {
@@ -96,10 +114,8 @@ function validateFrontmatter(frontmatter, filePath) {
 }
 
 /**
- * Verifica se todas as variáveis de ambiente necessárias para uma skill estão presentes.
- *
- * @param {object} frontmatter - Frontmatter da skill com `requires.env`.
- * @returns {{ valid: boolean, missing: string[] }} Resultado da verificação.
+ * @param {object} frontmatter
+ * @returns {{ valid: boolean, missing: string[] }}
  */
 function checkEnvRequirements(frontmatter) {
   const requiredEnv = frontmatter.requires?.env || [];
@@ -108,97 +124,149 @@ function checkEnvRequirements(frontmatter) {
 }
 
 /**
- * Verifica se todos os binários necessários para uma skill estão disponíveis no PATH.
- *
- * @param {object} frontmatter - Frontmatter da skill com `requires.bins`.
- * @returns {{ valid: boolean, missing: string[] }} Resultado da verificação.
+ * @param {object} frontmatter
+ * @returns {{ valid: boolean, missing: string[] }}
  */
 function checkBinRequirements(frontmatter) {
   const requiredBins = frontmatter.requires?.bins || [];
-  const missing = requiredBins.filter((bin) => {
-    try {
-      execSync(`command -v ${bin}`, { stdio: 'ignore' });
-      return false;
-    } catch {
-      return true;
-    }
-  });
+  const missing = requiredBins.filter((bin) => !isBinAvailable(bin));
   return { valid: missing.length === 0, missing };
 }
 
 /**
- * Carrega todas as skills do diretório especificado.
+ * Processa um arquivo de skill e adiciona ao mapa se válido.
  *
- * @param {string} skillsDir - Caminho absoluto do diretório de skills.
- * @returns {Promise<Map<string, object>>} Mapa de skills válidas (nome → metadados).
+ * @param {string} filePath
+ * @param {Map<string, object>} skills
+ * @returns {Promise<void>}
+ */
+async function loadSkillFile(filePath, skills) {
+  let content;
+  try {
+    content = await readFile(filePath, 'utf-8');
+  } catch (err) {
+    logger.warn('Não foi possível ler o arquivo de skill.', {
+      skill: 'skill-loader',
+      file: filePath,
+      error: err.message,
+    });
+    return;
+  }
+
+  const parsed = parseFrontmatter(content, filePath);
+  if (!parsed) return;
+
+  const { frontmatter, body } = parsed;
+  if (!validateFrontmatter(frontmatter, filePath)) return;
+
+  const envCheck = checkEnvRequirements(frontmatter);
+  if (!envCheck.valid) {
+    logger.warn('Skill desativada: variáveis de ambiente ausentes.', {
+      skill: 'skill-loader',
+      name: frontmatter.name,
+      missing_env: envCheck.missing,
+    });
+    return;
+  }
+
+  const binCheck = checkBinRequirements(frontmatter);
+  if (!binCheck.valid) {
+    logger.warn('Skill desativada: binários ausentes no PATH.', {
+      skill: 'skill-loader',
+      name: frontmatter.name,
+      missing_bins: binCheck.missing,
+    });
+    return;
+  }
+
+  skills.set(frontmatter.name, { ...frontmatter, body, filePath });
+  logger.debug('Skill carregada com sucesso.', {
+    skill: 'skill-loader',
+    name: frontmatter.name,
+    actions: frontmatter.actions,
+  });
+}
+
+/**
+ * Descobre arquivos de skill em um diretório (flat .md ou subpastas com SKILL.md).
+ *
+ * @param {string} dir
+ * @returns {Promise<string[]>}
+ */
+async function discoverSkillFiles(dir) {
+  const files = [];
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return files;
+  }
+
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isFile() && entry.name.endsWith('.md')) {
+      files.push(fullPath);
+    } else if (entry.isDirectory()) {
+      const skillMd = join(fullPath, 'SKILL.md');
+      try {
+        const s = await stat(skillMd);
+        if (s.isFile()) files.push(skillMd);
+      } catch {
+        // subpasta sem SKILL.md — ignorar
+      }
+    }
+  }
+  return files;
+}
+
+/**
+ * Carrega todas as skills de um diretório.
+ *
+ * @param {string} skillsDir
+ * @returns {Promise<Map<string, object>>}
  */
 export async function loadSkills(skillsDir) {
   const skills = new Map();
+  const files = await discoverSkillFiles(skillsDir);
 
-  let files;
-  try {
-    files = await readdir(skillsDir);
-  } catch (err) {
-    logger.error('Falha ao ler diretório de skills.', {
-      skill: 'skill-loader',
-      dir: skillsDir,
-      error: err.message,
-    });
-    throw err;
+  for (const filePath of files) {
+    await loadSkillFile(filePath, skills);
   }
 
-  const skillFiles = files.filter((f) => f.endsWith('.md'));
+  logger.info(`${skills.size} skill(s) carregada(s) de ${skillsDir}.`, {
+    skill: 'skill-loader',
+    loaded: [...skills.keys()],
+  });
 
-  for (const file of skillFiles) {
-    const filePath = join(skillsDir, file);
+  return skills;
+}
 
-    let content;
+/**
+ * Carrega skills de múltiplos diretórios (skills/ + .cursor/skills/).
+ * Skills com mesmo nome: último diretório prevalece.
+ *
+ * @param {string[]} skillDirs
+ * @returns {Promise<Map<string, object>>}
+ */
+export async function loadSkillsFromDirs(skillDirs) {
+  const skills = new Map();
+
+  for (const dir of skillDirs) {
     try {
-      content = await readFile(filePath, 'utf-8');
+      const dirSkills = await loadSkills(dir);
+      for (const [name, meta] of dirSkills) {
+        skills.set(name, meta);
+      }
     } catch (err) {
-      logger.warn('Não foi possível ler o arquivo de skill.', {
+      logger.warn('Falha ao carregar skills do diretório.', {
         skill: 'skill-loader',
-        file: filePath,
+        dir,
         error: err.message,
       });
-      continue;
     }
-
-    const parsed = parseFrontmatter(content, filePath);
-    if (!parsed) continue;
-
-    const { frontmatter, body } = parsed;
-    if (!validateFrontmatter(frontmatter, filePath)) continue;
-
-    const envCheck = checkEnvRequirements(frontmatter);
-    if (!envCheck.valid) {
-      logger.warn('Skill desativada: variáveis de ambiente ausentes.', {
-        skill: 'skill-loader',
-        name: frontmatter.name,
-        missing_env: envCheck.missing,
-      });
-      continue;
-    }
-
-    const binCheck = checkBinRequirements(frontmatter);
-    if (!binCheck.valid) {
-      logger.warn('Skill desativada: binários ausentes no PATH.', {
-        skill: 'skill-loader',
-        name: frontmatter.name,
-        missing_bins: binCheck.missing,
-      });
-      continue;
-    }
-
-    skills.set(frontmatter.name, { ...frontmatter, body, filePath });
-    logger.debug('Skill carregada com sucesso.', {
-      skill: 'skill-loader',
-      name: frontmatter.name,
-      actions: frontmatter.actions,
-    });
   }
 
-  logger.info(`${skills.size} skill(s) carregada(s) com sucesso.`, {
+  logger.info(`${skills.size} skill(s) carregada(s) no total.`, {
     skill: 'skill-loader',
     loaded: [...skills.keys()],
   });

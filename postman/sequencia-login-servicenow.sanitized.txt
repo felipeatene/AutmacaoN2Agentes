@@ -1,0 +1,117 @@
+curl 'https://login.microsoftonline.com/common/discovery/instance?api-version=1.1&authorization_endpoint=https://login.microsoftonline.com/3737367d-87d3-46ca-b00f-21b50c428b5e/oauth2/v2.0/authorize' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://login.microsoftonline.com/3737367d-87d3-46ca-b00f-21b50c428b5e/v2.0/.well-known/openid-configuration' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://login.microsoftonline.com/3737367d-87d3-46ca-b00f-21b50c428b5e/oauth2/v2.0/token' \
+  --data-raw 'client_id=dcd4a76f-f189-495f-a6f4-87fb1c63bd76&redirect_uri=https%3A%2F%2Fdagente.localiza.com%2Fdagente-host-web%2Fauth-callback&scope=dcd4a76f-f189-495f-a6f4-87fb1c63bd76%2F.default%20openid%20profile%20offline_access&code=REDACTED&x-client-SKU=msal.js.browser&x-client-VER=2.39.0&x-ms-lib-capability=retry-after, h429&x-client-current-telemetry=5|865,0,,,|,&x-client-last-telemetry=5|0|||0,0&code_verifier=REDACTED&grant_type=authorization_code&client_info=1&client-request-id=56d09558-2272-4120-a0a4-9812e3c1b8d6';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//remoteEntry.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/ponto/banco-horas' \
+  -H 'x-datadog-trace-id: 1627471330751345234';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/colaboradores/me/perfil' \
+  -H 'x-datadog-trace-id: 853745750603432010';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/ponto/pendencias/quantidade' \
+  -H 'x-datadog-trace-id: 4614381474526621521';
+curl 'https://api-hub.localiza.com/dg-comunicacao-api/v1/notificacoes' \
+  -H 'x-datadog-trace-id: 7558700449781996403';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/ponto/marcacoes/hoje' \
+  -H 'x-datadog-trace-id: 5935624654665667526';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/ponto-ouro/contagem-irregularidades' \
+  -H 'x-datadog-trace-id: 6086159102612550560';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/colaboradores/me/perfil' \
+  -H 'x-datadog-trace-id: 4807732232560880549';
+curl 'https://dagente.localiza.com/dagente-host-web/image/newellipse.png' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/141.fb1277f5.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/365.36b83d9b.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/614.29724d1f.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/211.ea1d59dc.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/css/async/386.4f86e68d.css' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/100.fd548f34.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/771.c7d0966e.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/481.f5ba9436.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/845.a8bc4023.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/863.8beb8098.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/655.fad133e6.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/458.98e3fb7e.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/469.96d42ec7.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/135.142b2f06.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/810.59239954.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/579.7d5bef9b.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/588.f09346ed.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/106.41cd09ed.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/349.9d3ce788.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/396.919237ad.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/442.1f7f87a5.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/liza-chatbot-genai-ui//static/js/async/532.33a23830.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/jornada/informacoes' \
+  -H 'x-datadog-trace-id: 3619826374252709120';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/jornada/informacoes' \
+  -H 'x-datadog-trace-id: 5324932692750382413';
+curl 'https://api-hub.localiza.com/oauth/token/accesstoken?grant_type=client_credentials' \
+  -X 'POST' \
+  -H 'x-datadog-trace-id: 2609233135811155887';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/remoteEntry.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/5655.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/9826.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/5056.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/2772.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/1043.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/1389.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/9644.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/2644.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/5830.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/5439.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/4860.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/690.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/766.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/5126.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/8721.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/3808.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/4074.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/6199.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://dagente.localiza.com/dg-colaborador-ponto-modulo-ui-react/1730.js' \
+  -H 'sec-ch-ua-mobile: ?0';
+curl 'https://api-hub.localiza.com/rh-portalcolaborador-bff/v1/ponto/banco-horas' \
+  -H 'x-datadog-trace-id: 2668216465878210216';

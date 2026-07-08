@@ -6,6 +6,9 @@ node_modules/
 .env.local
 .env.*.local
 
+# Postman collection original (contém senhas)
+**/ServiceNow Schema Mapper.postman_collection.json
+
 # Logs
 *.log
 logs/
@@ -28,3 +31,26 @@ temp/
 # Sistema Operacional
 .DS_Store
 Thumbs.db
+
+# DaGente Banco de Horas (Python)
+.dagente_cache/
+**/.dagente_cache/
+
+# ServiceNow sessão browser (cookies SSO — NUNCA versionar)
+.snow_n2/
+**/.snow_n2/
+tools/dagente-banco-horas/.env
+tools/dagente-banco-horas/.pytest_cache/
+tools/dagente-banco-horas/**/*.egg-info/
+tools/dagente-banco-horas/dist/
+tools/dagente-banco-horas/build/
+
+# Python bytecode / cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Ferramentas de login por navegador / scraping de cookies (PROIBIDAS — política M2M)
+# Ver .cursor/rules/security-auth.mdc. Mantidas apenas localmente, nunca versionadas.
+tools/snow-human-login/
+.cursor/skills/snow-human-login/

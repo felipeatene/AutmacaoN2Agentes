@@ -1,5 +1,5 @@
 /**
- * Ponto de Entrada Principal — Agente N2 de Sustentação de TI
+ * Ponto de Entrada Principal — Lino (Filtro N1 Inteligente)
  *
  * Ciclo principal de execução conforme spec.md RF-01:
  * - Inicializa configuração e valida variáveis de ambiente.
@@ -27,9 +27,14 @@ try {
 
 import { validateConfig, getConfig } from './utils/config.js';
 import { logger } from './utils/logger.js';
-import { loadSkills } from './skillLoader.js';
+import { loadSkillsFromDirs } from './skillLoader.js';
 import { loadSOPs } from './sop/runner.js';
 import { pollIncidents } from './snow/incidents.js';
+import {
+  buildQueueFilter,
+  resolveUserAssignmentGroups,
+  resolveExplicitGroups,
+} from './snow/groups.js';
 import { initTeamsAdapter } from './teams/client.js';
 import { processCycle } from './orchestrator.js';
 
@@ -40,6 +45,38 @@ const ROOT_DIR = join(__dirname, '..');
 /** Flag de controle do ciclo principal. */
 let running = false;
 let cycleTimer = null;
+
+/** Cache do filtro de filas (reconstruído a cada ciclo). */
+let queueFilterCache = { sysIds: [], builtAt: 0 };
+
+/**
+ * Resolve filtro de filas de atribuição para polling.
+ *
+ * @param {object} config
+ * @returns {Promise<string[]>}
+ */
+async function resolveQueueSysIds(config) {
+  const { queues } = config.snow;
+  const snowRead = config.snow.read || config.snow;
+
+  if (queues.filterMode === 'none') {
+    return [];
+  }
+
+  const userGroups =
+    queues.monitorUser && ['user', 'both'].includes(queues.filterMode)
+      ? await resolveUserAssignmentGroups(queues.monitorUser, snowRead)
+      : [];
+
+  const explicitGroups =
+    queues.extraAssignmentGroups.length > 0 && ['explicit', 'both'].includes(queues.filterMode)
+      ? await resolveExplicitGroups(queues.extraAssignmentGroups, snowRead)
+      : [];
+
+  const filter = buildQueueFilter(queues.filterMode, userGroups, explicitGroups);
+  queueFilterCache = { sysIds: filter.sysIds, builtAt: Date.now() };
+  return filter.sysIds;
+}
 
 /**
  * Executa um ciclo completo de polling e processamento.
@@ -62,10 +99,13 @@ async function runCycle(config, sops) {
   try {
     logger.info('Iniciando ciclo de polling.', { skill: 'main-loop' });
 
+    const assignmentGroupSysIds = await resolveQueueSysIds(config);
+
     const incidents = await pollIncidents(
       config.snow,
       2,
-      config.agent.maxTicketsPerCycle
+      config.agent.maxTicketsPerCycle,
+      assignmentGroupSysIds
     );
 
     if (incidents.length === 0) {
@@ -114,7 +154,7 @@ function shutdown(exitCode = 0) {
  * Inicializa e inicia o agente.
  */
 async function main() {
-  logger.info('=== Agente N2 de Sustentação de TI Iniciando ===', { skill: 'main-loop' });
+  logger.info('=== Lino (Filtro N1) Iniciando ===', { skill: 'main-loop' });
 
   // Passo 1: Validar configuração (falha rápida se variáveis ausentes)
   validateConfig();
@@ -127,9 +167,9 @@ async function main() {
   });
 
   // Passo 2: Carregar skills
-  const skillsDir = join(ROOT_DIR, 'skills');
+  const skillsDirs = [join(ROOT_DIR, 'skills'), join(ROOT_DIR, '.cursor', 'skills')];
   try {
-    const skills = await loadSkills(skillsDir);
+    const skills = await loadSkillsFromDirs(skillsDirs);
     logger.info('Skills disponíveis.', {
       skill: 'main-loop',
       count: skills.size,
@@ -174,7 +214,7 @@ async function main() {
   // Passo 7: Iniciar ciclo periódico
   cycleTimer = setInterval(() => runCycle(config, sops), config.agent.pollIntervalMs);
 
-  logger.info('Agente N2 ativo. Polling a cada ' + config.agent.pollIntervalMs / 1000 + ' segundos.', {
+  logger.info('Lino ativo. Polling a cada ' + config.agent.pollIntervalMs / 1000 + ' segundos.', {
     skill: 'main-loop',
   });
 }

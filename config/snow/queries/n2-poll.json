@@ -1,0 +1,39 @@
+{
+  "id": "n2-poll",
+  "name": "N2 Agent Poll Query",
+  "table": "incident",
+  "method": "GET",
+  "path": "/api/now/table/incident",
+  "baseFilters": [
+    "stateNOT IN15,6,7,503",
+    "u_qs_type=Incident",
+    "assignment_group=25f28e6a87363a98ed9e85930cbb3518",
+    "u_report_systems_failure=2b6769c087b63e506de663930cbb3594"
+  ],
+  "dynamicFilters": [
+    "assigned_to=EMPTY",
+    "sys_updated_on>javascript:gs.minutesAgo({minutesAgo})"
+  ],
+  "assignmentGroupMode": "IN",
+  "params": {
+    "sysparm_display_value": "all",
+    "sysparm_exclude_reference_link": "true",
+    "sysparm_limit": "{limit}"
+  },
+  "fields": [
+    "sys_id",
+    "number",
+    "short_description",
+    "description",
+    "state",
+    "incident_state",
+    "assigned_to",
+    "assignment_group",
+    "caller_id",
+    "sys_updated_on",
+    "close_code",
+    "work_notes",
+    "u_aad_object_id"
+  ],
+  "description": "Query de polling do agente N2 — base Guepardo + sem atribuição + atualizados nos últimos N minutos."
+}

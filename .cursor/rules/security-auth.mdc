@@ -1,0 +1,36 @@
+---
+description: Diretrizes de segurança e métodos de autenticação permitidos (M2M) — bloqueio de acesso a cookies de browser
+alwaysApply: true
+---
+
+# Diretriz de Segurança e Integração
+
+## 🚨 PROIBIÇÃO DE SCRAPING DE COOKIES E CREDENTIAL DUMPING
+
+Tentativas passadas de extrair cookies locais (via DPAPI do Windows, arquivos SQLite do Microsoft Edge/Chrome, ou \`browser_cookie3\`) **ACIONARAM O SOC (Centro de Operações de Segurança)** e foram classificadas como **comportamento suspeito (Credential Dumping)**.
+
+**É ESTRITAMENTE PROIBIDO PARA O AGENTE CURSOR:**
+1. Ler, pesquisar ou modificar pastas do usuário como \`%LOCALAPPDATA%\\Microsoft\\Edge\\User Data\`, \`Google\\Chrome\`, etc.
+2. Tentar decifrar ou copiar cookies (como \`JSESSIONID\`, \`glide_session_store\`, \`g_ck\`) a partir dos navegadores instalados no computador.
+3. Sugerir ou executar scripts (Node, Python, PowerShell) focados em extração de DPAPI.
+4. Usar ferramentas de automação web (\`Playwright\`, \`Selenium\`, \`Puppeteer\`) para emular login humano local com o intuito de obter tokens ou burlar autenticação SSO (My Apps / Conditional Access).
+
+## ✅ PADRÃO OFICIAL DE ARQUITETURA: MACHINE-TO-MACHINE (M2M)
+
+Qualquer integração entre a Automação N2, ServiceNow e Microsoft Teams DEVE usar integrações de API oficiais (M2M).
+
+### 1. ServiceNow
+As integrações devem utilizar APIs REST oficiais. O modo \`session\` foi removido.
+- **Autenticação Permitida:** 
+  - OAuth 2.0 (Client ID / Client Secret)
+  - Basic Authentication (Service Account oficial aprovada: Username/Password)
+- **Módulo a usar:** \`src/snow/client.js\` com authMode \`basic\` ou \`oauth\`.
+
+### 2. Microsoft Teams
+As mensagens proativas (Adaptive Cards) devem ser enviadas exclusivamente via **Microsoft Bot Framework**.
+- Requer \`TEAMS_APP_ID\` e \`TEAMS_APP_PASSWORD\` configurados no \`.env\`.
+- O módulo responsável é \`src/teams/proactive.js\` usando o \`BotFrameworkAdapter\`.
+
+## EM CASO DE ERROS DE AUTENTICAÇÃO (401/403)
+- Aplique o **Pilar 1 da Constituição (Falha Rápida e Ruidosa)**: Interrompa o ciclo.
+- **NUNCA** sugira a criação de scripts para pegar cookies ou burlar o acesso. Informe ao humano responsável (Felipe/Joel) que as credenciais M2M no \`.env\` expiraram ou não possuem os privilégios necessários.

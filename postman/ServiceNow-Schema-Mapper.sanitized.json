@@ -1,0 +1,3734 @@
+{
+  "info": {
+    "_postman_id": "c0cfdedc-1547-4c8e-a636-9966ad0f3ae2",
+    "name": "ServiceNow Schema Mapper",
+    "description": "Collection gerada automaticamente para testar tabelas do ServiceNow, com requisições úteis e documentação por tabela. [SANITIZED — passwords removed]",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "7549759"
+  },
+  "item": [
+    {
+      "name": "incident — Incident",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/incident",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "incident"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=incident&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=incident"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Guepardo: Abertos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/incident?sysparm_query=stateNOT%20IN15%2C6%2C7%2C503%5Eu_qs_type%3DIncident%5Eassignment_group%3D25f28e6a87363a98ed9e85930cbb3518%5Eassignment_group%3D25f28e6a87363a98ed9e85930cbb3518%5Eu_report_systems_failure%3D2b6769c087b63e506de663930cbb3594&sysparm_count=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "incident"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "stateNOT%20IN15%2C6%2C7%2C503%5Eu_qs_type%3DIncident%5Eassignment_group%3D25f28e6a87363a98ed9e85930cbb3518%5Eassignment_group%3D25f28e6a87363a98ed9e85930cbb3518%5Eu_report_systems_failure%3D2b6769c087b63e506de663930cbb3594"
+                },
+                {
+                  "key": "sysparm_first_row",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "sysparm_view",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sysparm_count",
+                  "value": "true",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/incident?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "incident"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/incident/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "incident",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: incident\nLabel: Incident\nCampos (top 10): parent, u_provider_ticket, u_qs_times_reassigned, u_incident_exposure_time, x_126749_aws_sc_awsstatus, caused_by, watch_list, sys_updated_on, u_impacted_groups, skills\nReferências: 55 campos"
+    },
+    {
+      "name": "problem — Problem",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/problem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "problem"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=problem&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=problem"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/problem?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "problem"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/problem?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "problem"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/problem/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "problem",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: problem\nLabel: Problem\nCampos (top 10): parent, u_qs_times_reassigned, watch_list, upon_reject, sys_updated_on, approval_history, skills, u_pulse_check, number, state\nReferências: 32 campos"
+    },
+    {
+      "name": "change_request — Change Request",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/change_request",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "change_request"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=change_request&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=change_request"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/change_request?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "change_request"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/change_request?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "change_request"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/change_request/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "change_request",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: change_request\nLabel: Change Request\nCampos (top 10): parent, reason, u_qs_earliest_start, x_126749_aws_sc_awsstatus, watch_list, x_126749_aws_sc_automationexecutionid, u_used_appdynamics_or_sonar, upon_reject, sys_updated_on, u_motivo_criacao_facilidades\nReferências: 37 campos"
+    },
+    {
+      "name": "cmdb_ci — Configuration Item",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/cmdb_ci",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "cmdb_ci"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=cmdb_ci&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=cmdb_ci"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: cmdb_ci\nLabel: Configuration Item\nCampos (top 10): attested_date, operational_status, sys_updated_on, u_nome_do_servi_o_no_datadog, u_team_project, u_regiao_de_utilizacao_do_ic, discovery_source, first_discovered, due_in, u_qs_cmdb_ci_managed_by\nReferências: 34 campos"
+    },
+    {
+      "name": "cmdb_ci_server — Server",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/cmdb_ci_server",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "cmdb_ci_server"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=cmdb_ci_server&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=cmdb_ci_server"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_server?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_server"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_server?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_server"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_server/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_server",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: cmdb_ci_server\nLabel: Server\nCampos (top 10): firewall_status, os_address_width, attested_date, operational_status, os_service_pack, cpu_core_thread, cpu_manufacturer, sys_updated_on, u_nome_do_servi_o_no_datadog, u_team_project\nReferências: 41 campos"
+    },
+    {
+      "name": "cmdb_ci_database — Database",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/cmdb_ci_database",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "cmdb_ci_database"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=cmdb_ci_database&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=cmdb_ci_database"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_database?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_database"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_database?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_database"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_database/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_database",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: cmdb_ci_database\nLabel: Database\nCampos (top 10): attested_date, operational_status, sys_updated_on, u_nome_do_servi_o_no_datadog, type, u_team_project, u_regiao_de_utilizacao_do_ic, discovery_source, first_discovered, due_in\nReferências: 35 campos"
+    },
+    {
+      "name": "cmdb_ci_application — cmdb_ci_application",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/cmdb_ci_application",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "cmdb_ci_application"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=cmdb_ci_application&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=cmdb_ci_application"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_application?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_application"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_application?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_application"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/cmdb_ci_application/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "cmdb_ci_application",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: cmdb_ci_application\nLabel: cmdb_ci_application\nCampos (top 10): n/d\nReferências: 0 campos"
+    },
+    {
+      "name": "service_catalog — service_catalog",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/service_catalog",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "service_catalog"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=service_catalog&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=service_catalog"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/service_catalog?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "service_catalog"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/service_catalog?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "service_catalog"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/service_catalog/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "service_catalog",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: service_catalog\nLabel: service_catalog\nCampos (top 10): n/d\nReferências: 0 campos"
+    },
+    {
+      "name": "sc_request — Request",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/sc_request",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "sc_request"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=sc_request&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=sc_request"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_request?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_request"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_request?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_request"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_request/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_request",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: sc_request\nLabel: Request\nCampos (top 10): parent, delivery_address, made_sla, watch_list, upon_reject, requested_for, sys_updated_on, u_loc_assignment_group_date, task_effective_number, approval_history\nReferências: 25 campos"
+    },
+    {
+      "name": "sc_cart_item — Item",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/sc_cart_item",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "sc_cart_item"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=sc_cart_item&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=sc_cart_item"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_cart_item?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_cart_item"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_cart_item?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_cart_item"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_cart_item/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_cart_item",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: sc_cart_item\nLabel: Item\nCampos (top 10): variables, quantity, hints, sys_mod_count, active, sc_catalog, requested_for, sys_updated_on, show_quantity, sys_tags\nReferências: 6 campos"
+    },
+    {
+      "name": "sc_req_item — Requested Item",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/sc_req_item",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "sc_req_item"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=sc_req_item&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=sc_req_item"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_req_item?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_req_item"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_req_item?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_req_item"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_req_item/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_req_item",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: sc_req_item\nLabel: Requested Item\nCampos (top 10): parent, u_aprovacao, watch_list, sc_catalog, upon_reject, requested_for, sys_updated_on, u_confirmation_status, quantity_sourced, u_resolved_by\nReferências: 39 campos"
+    },
+    {
+      "name": "sc_task — Catalog Task",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/sc_task",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "sc_task"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=sc_task&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=sc_task"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_task?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_task"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_task?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_task"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sc_task/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sc_task",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: sc_task\nLabel: Catalog Task\nCampos (top 10): parent, made_sla, watch_list, sc_catalog, upon_reject, sys_updated_on, u_loc_assignment_group_date, task_effective_number, approval_history, skills\nReferências: 28 campos"
+    },
+    {
+      "name": "knowledge — knowledge",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/knowledge",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "knowledge"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=knowledge&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=knowledge"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/knowledge?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "knowledge"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/knowledge?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "knowledge"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/knowledge/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "knowledge",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: knowledge\nLabel: knowledge\nCampos (top 10): n/d\nReferências: 0 campos"
+    },
+    {
+      "name": "kb_knowledge — Knowledge",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/kb_knowledge",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "kb_knowledge"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=kb_knowledge&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=kb_knowledge"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/kb_knowledge?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "kb_knowledge"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/kb_knowledge?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "kb_knowledge"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/kb_knowledge/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "kb_knowledge",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: kb_knowledge\nLabel: Knowledge\nCampos (top 10): parent, wiki, rating, language, source, sys_updated_on, u_loc_owner_group, number, sys_updated_by, sys_created_on\nReferências: 14 campos"
+    },
+    {
+      "name": "sys_user — User",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/sys_user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "sys_user"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=sys_user&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=sys_user"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_user?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_user"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_user?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_user"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_user/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_user",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: sys_user\nLabel: User\nCampos (top 10): calendar_integration, country, last_login_time, source, sys_updated_on, building, web_service_access_only, notification, u_loc_deactivation_date, u_loc_third_party_employee\nReferências: 12 campos"
+    },
+    {
+      "name": "sys_user_group — Group",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/sys_user_group",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "sys_user_group"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=sys_user_group&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=sys_user_group"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_user_group?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_user_group"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_user_group?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_user_group"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_user_group/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_user_group",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: sys_user_group\nLabel: Group\nCampos (top 10): parent, description, source, sys_updated_on, type, u_grupo_de_automacao, points, u_loc_board_of_directors, sys_id, sys_updated_by\nReferências: 7 campos"
+    },
+    {
+      "name": "assignment_group — assignment_group",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/assignment_group",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "assignment_group"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=assignment_group&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=assignment_group"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/assignment_group?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "assignment_group"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/assignment_group?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "assignment_group"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/assignment_group/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "assignment_group",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: assignment_group\nLabel: assignment_group\nCampos (top 10): n/d\nReferências: 0 campos"
+    },
+    {
+      "name": "task — Task",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/task",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "task"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=task&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=task"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/task?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "task"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/task?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "task"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/task/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "task",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: task\nLabel: Task\nCampos (top 10): parent, made_sla, watch_list, upon_reject, sys_updated_on, u_loc_assignment_group_date, task_effective_number, approval_history, skills, number\nReferências: 23 campos"
+    },
+    {
+      "name": "sn_customerservice_case — sn_customerservice_case",
+      "item": [
+        {
+          "name": "UI Meta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/ui/meta/sn_customerservice_case",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "ui",
+                "meta",
+                "sn_customerservice_case"
+              ]
+            },
+            "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+          },
+          "response": []
+        },
+        {
+          "name": "Sys Dictionary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sys_dictionary?sysparm_query=name=sn_customerservice_case&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sys_dictionary"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "name=sn_customerservice_case"
+                },
+                {
+                  "key": "sysparm_fields",
+                  "value": "element,label,internal_type,reference"
+                },
+                {
+                  "key": "sysparm_limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Lista definição das colunas via sys_dictionary"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Lista 10",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sn_customerservice_case?sysparm_limit=10&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sn_customerservice_case"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Lista 10 registros com display_value=all"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sn_customerservice_case?sysparm_limit=1&sysparm_display_value=all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sn_customerservice_case"
+              ],
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                },
+                {
+                  "key": "sysparm_display_value",
+                  "value": "all"
+                }
+              ]
+            },
+            "description": "Retorna 1 registro para inferir colunas"
+          },
+          "response": []
+        },
+        {
+          "name": "Table API: Get por sys_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/now/table/sn_customerservice_case/{{sys_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "now",
+                "table",
+                "sn_customerservice_case",
+                "{{sys_id}}"
+              ]
+            },
+            "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tabela: sn_customerservice_case\nLabel: sn_customerservice_case\nCampos (top 10): n/d\nReferências: 0 campos"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const authMethod = pm.environment.get('auth_method') || pm.collectionVariables.get('auth_method') || 'basic';",
+          "const username = pm.environment.get('username') || pm.collectionVariables.get('username');",
+          "const password = pm.environment.get('password') || pm.collectionVariables.get('password');",
+          "const token = pm.environment.get('bearer_token') || pm.collectionVariables.get('bearer_token');",
+          "pm.request.headers.upsert({ key: 'Accept-Language', value: 'pt-BR,pt;q=0.9,en;q=0.7' });",
+          "if (authMethod === 'basic' && username && password) {",
+          "  const enc = Buffer.from(`${username}:${password}`).toString('base64');",
+          "  pm.request.headers.upsert({ key: 'Authorization', value: `Basic ${enc}` });",
+          "} else if (authMethod === 'bearer' && token) {",
+          "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://ibmlocaliza.service-now.com"
+    },
+    {
+      "key": "auth_method",
+      "value": "basic"
+    },
+    {
+      "key": "username",
+      "value": "integration.enable"
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "bearer_token",
+      "value": ""
+    },
+    {
+      "key": "sys_id",
+      "value": ""
+    },
+    {
+      "key": "DadosINC",
+      "value": ""
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 /**
- * Orquestrador de Decisões — Agente N2
+ * Orquestrador de Decisões — Lino
  *
  * Implementa o fluxo de decisão conforme plan.md seção 4:
  *
@@ -15,8 +15,9 @@
  * - Pilar 3: Human-in-the-Loop para ações sem SOP.
  */
 
-import { addWorkNote, resolveIncident, routeIncident, generateExecutionId } from './snow/incidents.js';
+import { addWorkNote, resolveIncident, routeIncident, generateExecutionId, extractCallerAadObjectId } from './snow/incidents.js';
 import { applyTags } from './snow/tags.js';
+import { resolveGroupSysId } from './snow/groups.js';
 import { findMatchingSOP, executeSOPSteps } from './sop/runner.js';
 import { sendProactiveWithFallback } from './teams/proactive.js';
 import { buildContextRequestCard } from './teams/adaptiveCards.js';
@@ -82,6 +83,8 @@ function hasSufficientContext(incident) {
 export async function processIncident(incident, sops, config) {
   const executionId = generateExecutionId();
   const snowConfig = config.snow;
+  const snowWrite = snowConfig.write || snowConfig;
+  const snowRead = snowConfig.read || snowConfig;
   const teamsConfig = config.teams;
 
   logger.info('Processando incidente.', {
@@ -97,7 +100,10 @@ export async function processIncident(incident, sops, config) {
     resolveIncident,
     patchIncident: async (sysId, fields, cfg) => {
       const { snowRequest } = await import('./snow/client.js');
-      return snowRequest('PATCH', `/api/now/table/incident/${sysId}`, cfg, { body: fields });
+      return snowRequest('PATCH', `/api/now/table/incident/${sysId}`, cfg, {
+        authProfile: 'write',
+        body: fields,
+      });
     },
   };
 
@@ -115,7 +121,7 @@ export async function processIncident(incident, sops, config) {
       matchedSop,
       incident,
       executionId,
-      snowConfig,
+      snowWrite,
       snowOps
     );
 
@@ -134,7 +140,7 @@ export async function processIncident(incident, sops, config) {
       execution_id: executionId,
     });
 
-    const userAadObjectId = incident.caller_id?.u_aad_object_id || incident.u_aad_object_id;
+    const userAadObjectId = extractCallerAadObjectId(incident);
 
     if (userAadObjectId) {
       const card = buildContextRequestCard({
@@ -154,7 +160,7 @@ export async function processIncident(incident, sops, config) {
         {
           incidentSysId: incident.sys_id,
           executionId,
-          addWorkNoteFn: (sysId, note, execId) => addWorkNote(sysId, note, execId, snowConfig),
+          addWorkNoteFn: (sysId, note, execId) => addWorkNote(sysId, note, execId, snowWrite),
         }
       );
 
@@ -168,7 +174,7 @@ export async function processIncident(incident, sops, config) {
         incident.sys_id,
         'Contexto insuficiente para processamento automático. Por favor, forneça mais detalhes sobre o problema.',
         executionId,
-        snowConfig
+        snowWrite
       );
       return { action: 'insufficient_context_noted', success: true };
     }
@@ -176,15 +182,25 @@ export async function processIncident(incident, sops, config) {
 
   // Aplicar tags e rotear para grupo correto
   if (routing.tags && routing.tags.length > 0) {
-    await applyTags(incident.sys_id, routing.tags, snowConfig);
+    await applyTags(incident.sys_id, routing.tags, snowWrite);
+  }
+
+  const group = await resolveGroupSysId(routing.group, snowRead);
+  if (!group) {
+    logger.error('Grupo de roteamento não encontrado. Ticket não roteado.', {
+      skill: 'orchestrator',
+      incident_number: incident.number,
+      group_name: routing.group,
+    });
+    return { action: 'route_failed', success: false };
   }
 
   await routeIncident(
     incident.sys_id,
-    routing.group,
+    group.sys_id,
     category,
     executionId,
-    snowConfig
+    snowWrite
   );
 
   return { action: 'classified_and_routed', success: true };
@@ -218,6 +234,9 @@ export async function processCycle(incidents, sops, config) {
       else if (result.action === 'fallback_work_note') stats.fallback++;
       else if (!result.success) stats.failed++;
     } catch (err) {
+      if (err.message?.includes('authentication')) {
+        throw err;
+      }
       stats.failed++;
       logger.error('Falha ao processar incidente.', {
         skill: 'orchestrator',

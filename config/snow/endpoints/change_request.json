@@ -1,0 +1,52 @@
+{
+  "table": "change_request",
+  "label": "Change Request",
+  "description": "Tabela: change_request\nLabel: Change Request\nCampos (top 10): parent, reason, u_qs_earliest_start, x_126749_aws_sc_awsstatus, watch_list, x_126749_aws_sc_automationexecutionid, u_used_appdynamics_or_sonar, upon_reject, sys_updated_on, u_motivo_criacao_facilidades\nReferências: 37 campos",
+  "requests": [
+    {
+      "name": "UI Meta",
+      "method": "GET",
+      "path": "/api/now/ui/meta/change_request",
+      "query": {},
+      "description": "Retorna metadados de UI para a tabela (labels, tipos)"
+    },
+    {
+      "name": "Sys Dictionary",
+      "method": "GET",
+      "path": "/api/now/table/sys_dictionary?sysparm_query=name=change_request&sysparm_fields=element,label,internal_type,reference&sysparm_limit=1000",
+      "query": {
+        "sysparm_query": "name=change_request",
+        "sysparm_fields": "element,label,internal_type,reference",
+        "sysparm_limit": "1000"
+      },
+      "description": "Lista definição das colunas via sys_dictionary"
+    },
+    {
+      "name": "Table API: Lista 10",
+      "method": "GET",
+      "path": "/api/now/table/change_request?sysparm_limit=10&sysparm_display_value=all",
+      "query": {
+        "sysparm_limit": "10",
+        "sysparm_display_value": "all"
+      },
+      "description": "Lista 10 registros com display_value=all"
+    },
+    {
+      "name": "Table API: Sample 1",
+      "method": "GET",
+      "path": "/api/now/table/change_request?sysparm_limit=1&sysparm_display_value=all",
+      "query": {
+        "sysparm_limit": "1",
+        "sysparm_display_value": "all"
+      },
+      "description": "Retorna 1 registro para inferir colunas"
+    },
+    {
+      "name": "Table API: Get por sys_id",
+      "method": "GET",
+      "path": "/api/now/table/change_request/{{sys_id}}",
+      "query": {},
+      "description": "Busca registro específico; configure {{sys_id}} no ambiente"
+    }
+  ]
+}

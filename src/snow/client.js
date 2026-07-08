@@ -1,33 +1,51 @@
 /**
- * Cliente HTTP ServiceNow — Agente N2
+ * Cliente HTTP ServiceNow — Lino
  *
  * Conforme constitution.md:
  * - Pilar 1: Falha Rápida — erros de autenticação e rede suspendem o ciclo.
  * - Pilar 2: Idempotência — consultas de leitura sempre precedem escritas.
  *
- * Suporta OAuth2 (recomendado) com fallback automático para Basic Auth.
+ * Suporta perfis de autenticação separados (read/write) com OAuth2, Basic Auth ou sessão browser.
  */
 
 import { logger } from '../utils/logger.js';
+import { buildCookieHeader, loadSession } from './session-store.js';
+import { snowFetch } from './fetch.js';
 
-/** Token OAuth em memória (nunca persistido em disco). */
-let oauthToken = null;
-let tokenExpiresAt = 0;
+/** @type {Map<string, { token: string|null, expiresAt: number }>} */
+const oauthTokens = new Map();
+
+/**
+ * Resolve configuração de autenticação para o perfil solicitado.
+ *
+ * @param {object} config - Configuração snow (flat ou com read/write).
+ * @param {'read'|'write'} [authProfile='read']
+ * @returns {object} Configuração resolvida para o perfil.
+ */
+export function resolveAuthConfig(config, authProfile = 'read') {
+  if (config.read || config.write) {
+    const profile = authProfile === 'write' ? config.write : config.read;
+    return profile || config.read || config.write || config;
+  }
+  return config;
+}
 
 /**
  * Obtém um token OAuth2 do ServiceNow usando Client Credentials flow.
  *
- * @param {object} config - Configuração ServiceNow (instanceUrl, clientId, clientSecret).
+ * @param {object} config - Configuração ServiceNow do perfil.
+ * @param {string} profileKey - Chave do perfil para cache de token.
  * @returns {Promise<string>} Access token.
- * @throws {Error} Em caso de falha de autenticação (erro 4xx).
  */
-async function getOAuthToken(config) {
+async function getOAuthToken(config, profileKey) {
   const now = Date.now();
-  if (oauthToken && now < tokenExpiresAt - 30000) {
-    return oauthToken;
+  const cached = oauthTokens.get(profileKey) || { token: null, expiresAt: 0 };
+
+  if (cached.token && now < cached.expiresAt - 30000) {
+    return cached.token;
   }
 
-  logger.debug('Renovando token OAuth2 ServiceNow.', { skill: 'snow-client' });
+  logger.debug('Renovando token OAuth2 ServiceNow.', { skill: 'snow-client', profile: profileKey });
 
   const body = new URLSearchParams({
     grant_type: 'client_credentials',
@@ -35,7 +53,7 @@ async function getOAuthToken(config) {
     client_secret: config.clientSecret,
   });
 
-  const response = await fetch(`${config.instanceUrl}/oauth_token.do`, {
+  const response = await snowFetch(`${config.instanceUrl}/oauth_token.do`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),
@@ -44,6 +62,7 @@ async function getOAuthToken(config) {
   if (response.status === 401 || response.status === 403) {
     logger.error('Falha de autenticação OAuth2 ServiceNow. Suspendendo ciclo.', {
       skill: 'snow-client',
+      profile: profileKey,
       http_status: response.status,
     });
     throw new Error(`ServiceNow OAuth2 authentication failed: HTTP ${response.status}`);
@@ -54,27 +73,61 @@ async function getOAuthToken(config) {
   }
 
   const data = await response.json();
-  oauthToken = data.access_token;
-  tokenExpiresAt = now + (data.expires_in || 1800) * 1000;
+  const entry = {
+    token: data.access_token,
+    expiresAt: now + (data.expires_in || 1800) * 1000,
+  };
+  oauthTokens.set(profileKey, entry);
 
-  logger.debug('Token OAuth2 ServiceNow renovado com sucesso.', { skill: 'snow-client' });
-  return oauthToken;
+  logger.debug('Token OAuth2 ServiceNow renovado com sucesso.', { skill: 'snow-client', profile: profileKey });
+  return entry.token;
 }
 
 /**
- * Constrói o header de autorização, preferindo OAuth2 sobre Basic Auth.
+ * Resolve modo de autenticação efetivo do perfil.
  *
- * @param {object} config - Configuração ServiceNow.
- * @returns {Promise<string>} Valor do header Authorization.
+ * @param {object} config
+ * @param {'read'|'write'} authProfile
+ * @returns {'oauth'|'basic'|'session'}
  */
-async function buildAuthHeader(config) {
-  if (config.clientId && config.clientSecret) {
-    const token = await getOAuthToken(config);
-    return ['Bearer', token].join(' ');
+function resolveAuthMode(config, authProfile) {
+  if (config.authMode) {
+    return config.authMode;
   }
-  // Fallback Basic Auth
+  if (config.clientId && config.clientSecret) {
+    return 'oauth';
+  }
+  if (config.username && config.password) {
+    return 'basic';
+  }
+  return 'oauth';
+}
+
+/**
+ * Constrói headers de autenticação para a requisição.
+ *
+ * @param {object} config - Configuração ServiceNow do perfil.
+ * @param {string} profileKey - Chave do perfil.
+ * @param {'read'|'write'} authProfile
+ * @returns {Promise<{ authorization?: string, cookie?: string, authMode: string }>}
+ */
+async function buildRequestAuth(config, profileKey, authProfile) {
+  const authMode = resolveAuthMode(config, authProfile);
+
+  if (authMode === 'session') {
+    throw new Error(
+      'Sessão ServiceNow via browser (authMode=session) desativada por política de segurança M2M. ' +
+      'Configure SNOW_USERNAME/PASSWORD no arquivo .env.'
+    );
+  }
+
+  if (config.clientId && config.clientSecret) {
+    const token = await getOAuthToken(config, profileKey);
+    return { authMode: 'oauth', authorization: ['Bearer', token].join(' ') };
+  }
+
   const credentials = Buffer.from(`${config.username}:${config.password}`).toString('base64');
-  return `Basic ${credentials}`;
+  return { authMode: 'basic', authorization: `Basic ${credentials}` };
 }
 
 /**
@@ -82,19 +135,21 @@ async function buildAuthHeader(config) {
  *
  * @param {string} method - Método HTTP (GET, POST, PATCH).
  * @param {string} path - Caminho da API (ex: /api/now/table/incident).
- * @param {object} config - Configuração ServiceNow.
- * @param {object} [options={}] - Opções adicionais (params, body).
+ * @param {object} config - Configuração ServiceNow (com ou sem perfis read/write).
+ * @param {object} [options={}] - Opções adicionais (params, body, authProfile).
  * @param {number} [retryCount=0] - Contador de retentativas atual.
  * @returns {Promise<object>} Resposta JSON parseada.
- * @throws {Error} Em erros irrecuperáveis (4xx exceto 429, falhas de rede).
  */
 export async function snowRequest(method, path, config, options = {}, retryCount = 0) {
   const maxRetries = parseInt(process.env.MAX_RETRIES || '3', 10);
   const baseDelay = parseInt(process.env.RETRY_BASE_DELAY_MS || '1000', 10);
+  const authProfile = options.authProfile || 'read';
+  const profileConfig = resolveAuthConfig(config, authProfile);
+  const profileKey = `${profileConfig.instanceUrl}:${authProfile}`;
 
-  const authHeader = await buildAuthHeader(config);
+  const requestAuth = await buildRequestAuth(profileConfig, profileKey, authProfile);
 
-  const url = new URL(`${config.instanceUrl}${path}`);
+  const url = new URL(`${profileConfig.instanceUrl}${path}`);
   if (options.params) {
     for (const [key, value] of Object.entries(options.params)) {
       url.searchParams.set(key, value);
@@ -104,11 +159,20 @@ export async function snowRequest(method, path, config, options = {}, retryCount
   const fetchOptions = {
     method,
     headers: {
-      Authorization: authHeader,
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
   };
+
+  if (requestAuth.authorization) {
+    fetchOptions.headers.Authorization = requestAuth.authorization;
+  }
+  if (requestAuth.cookie) {
+    fetchOptions.headers.Cookie = requestAuth.cookie;
+  }
+  if (requestAuth.xUserToken) {
+    fetchOptions.headers['X-UserToken'] = requestAuth.xUserToken;
+  }
 
   if (options.body) {
     fetchOptions.body = JSON.stringify(options.body);
@@ -116,18 +180,18 @@ export async function snowRequest(method, path, config, options = {}, retryCount
 
   let response;
   try {
-    response = await fetch(url.toString(), fetchOptions);
+    response = await snowFetch(url.toString(), fetchOptions);
   } catch (networkError) {
     logger.error('Erro de rede ao conectar com ServiceNow. Suspendendo ciclo.', {
       skill: 'snow-client',
       method,
       path,
+      profile: authProfile,
       error: networkError.message,
     });
     throw networkError;
   }
 
-  // Rate limit — backoff exponencial
   if (response.status === 429 && retryCount < maxRetries) {
     const delay = baseDelay * Math.pow(2, retryCount);
     logger.warn('Rate limit atingido no ServiceNow. Aguardando para retentar.', {
@@ -139,15 +203,21 @@ export async function snowRequest(method, path, config, options = {}, retryCount
     return snowRequest(method, path, config, options, retryCount + 1);
   }
 
-  // Erros de autenticação — falha rápida, sem retry
   if (response.status === 401 || response.status === 403) {
+    const sessionHint =
+      requestAuth.authMode === 'session'
+        ? ' Sessão expirada. Modo M2M deve ser usado, configure credenciais no .env.'
+        : '';
+
     logger.error('Erro de autenticação ServiceNow. Suspendendo ciclo.', {
       skill: 'snow-client',
       method,
       path,
+      profile: authProfile,
+      auth_mode: requestAuth.authMode,
       http_status: response.status,
     });
-    throw new Error(`ServiceNow authentication error: HTTP ${response.status}`);
+    throw new Error(`ServiceNow authentication error: HTTP ${response.status}.${sessionHint}`);
   }
 
   if (!response.ok) {
@@ -156,6 +226,7 @@ export async function snowRequest(method, path, config, options = {}, retryCount
       skill: 'snow-client',
       method,
       path,
+      profile: authProfile,
       http_status: response.status,
       error_body: errorBody.substring(0, 500),
     });
@@ -169,8 +240,7 @@ export async function snowRequest(method, path, config, options = {}, retryCount
   return response.json();
 }
 
-/** Reseta o token OAuth em memória (útil para testes). */
+/** Reseta tokens OAuth em memória (útil para testes). */
 export function resetOAuthToken() {
-  oauthToken = null;
-  tokenExpiresAt = 0;
+  oauthTokens.clear();
 }

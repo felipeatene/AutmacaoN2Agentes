@@ -1,0 +1,28 @@
+# Pipeline CI — Lino
+# Executa testes unitários em PRs e pushes na branch main.
+# Credenciais M2M não são necessárias para este estágio (testes com mocks).
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Instalar Node.js 18'
+
+  - script: npm ci
+    displayName: 'Instalar dependências'
+
+  - script: npm test
+    displayName: 'Executar testes'

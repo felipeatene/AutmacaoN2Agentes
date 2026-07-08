@@ -1,0 +1,57 @@
+{
+  "info": {
+    "name": "Test Collection"
+  },
+  "item": [
+    {
+      "name": "incident — Incident",
+      "description": "Tabela incident",
+      "item": [
+        {
+          "name": "Guepardo: Abertos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/now/table/incident?sysparm_query=state%3D1%5Eassignment_group%3Dabc123",
+              "query": [
+                {
+                  "key": "sysparm_query",
+                  "value": "state=1^assignment_group=abc123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Table API: Sample 1",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/now/table/incident?sysparm_limit=1",
+              "query": [
+                {
+                  "key": "sysparm_limit",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://testinstance.service-now.com"
+    },
+    {
+      "key": "username",
+      "value": "testuser"
+    },
+    {
+      "key": "password",
+      "value": "super-secret-password"
+    }
+  ]
+}

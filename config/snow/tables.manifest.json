@@ -1,0 +1,102 @@
+{
+  "instance": "ibmlocaliza",
+  "baseUrl": "https://ibmlocaliza.service-now.com",
+  "importedAt": "2026-07-07T16:10:26.492Z",
+  "tables": [
+    {
+      "name": "incident",
+      "label": "Incident",
+      "endpointCount": 5
+    },
+    {
+      "name": "problem",
+      "label": "Problem",
+      "endpointCount": 5
+    },
+    {
+      "name": "change_request",
+      "label": "Change Request",
+      "endpointCount": 5
+    },
+    {
+      "name": "cmdb_ci",
+      "label": "Configuration Item",
+      "endpointCount": 5
+    },
+    {
+      "name": "cmdb_ci_server",
+      "label": "Server",
+      "endpointCount": 5
+    },
+    {
+      "name": "cmdb_ci_database",
+      "label": "Database",
+      "endpointCount": 5
+    },
+    {
+      "name": "cmdb_ci_application",
+      "label": "cmdb_ci_application",
+      "endpointCount": 5
+    },
+    {
+      "name": "service_catalog",
+      "label": "service_catalog",
+      "endpointCount": 5
+    },
+    {
+      "name": "sc_request",
+      "label": "Request",
+      "endpointCount": 5
+    },
+    {
+      "name": "sc_cart_item",
+      "label": "Item",
+      "endpointCount": 5
+    },
+    {
+      "name": "sc_req_item",
+      "label": "Requested Item",
+      "endpointCount": 5
+    },
+    {
+      "name": "sc_task",
+      "label": "Catalog Task",
+      "endpointCount": 5
+    },
+    {
+      "name": "knowledge",
+      "label": "knowledge",
+      "endpointCount": 5
+    },
+    {
+      "name": "kb_knowledge",
+      "label": "Knowledge",
+      "endpointCount": 5
+    },
+    {
+      "name": "sys_user",
+      "label": "User",
+      "endpointCount": 5
+    },
+    {
+      "name": "sys_user_group",
+      "label": "Group",
+      "endpointCount": 5
+    },
+    {
+      "name": "assignment_group",
+      "label": "assignment_group",
+      "endpointCount": 5
+    },
+    {
+      "name": "task",
+      "label": "Task",
+      "endpointCount": 5
+    },
+    {
+      "name": "sn_customerservice_case",
+      "label": "sn_customerservice_case",
+      "endpointCount": 5
+    }
+  ]
+}

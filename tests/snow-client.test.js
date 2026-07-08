@@ -139,4 +139,64 @@ describe('snow/client - snowRequest', () => {
       /ECONNREFUSED/
     );
   });
+
+  test('usa perfil write separado do read', async () => {
+    const config = {
+      read: {
+        instanceUrl: 'https://read.service-now.com',
+        username: 'reader',
+        password: 'read-pass',
+      },
+      write: {
+        instanceUrl: 'https://write.service-now.com',
+        username: 'writer',
+        password: 'write-pass',
+      },
+    };
+
+    let capturedUrl = '';
+    global.fetch = async (url, options) => {
+      capturedUrl = url;
+      const auth = options.headers.Authorization;
+      assert.ok(auth.includes('Basic'), 'Deve usar Basic Auth');
+      const decoded = Buffer.from(auth.replace('Basic ', ''), 'base64').toString();
+      assert.equal(decoded, 'writer:write-pass', 'Deve usar credenciais write');
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({ result: [] }),
+      };
+    };
+
+    const { snowRequest, resetOAuthToken } = await import('../src/snow/client.js');
+    resetOAuthToken();
+
+    await snowRequest('PATCH', '/api/now/table/incident/abc', config, {
+      authProfile: 'write',
+      body: { work_notes: 'test' },
+    });
+
+    assert.ok(capturedUrl.startsWith('https://write.service-now.com'));
+  });
+
+  test('rejeita authMode=session por política de segurança M2M', async () => {
+    const config = {
+      write: {
+        instanceUrl: 'https://write.service-now.com',
+        authMode: 'session',
+      },
+    };
+
+    const { snowRequest, resetOAuthToken } = await import('../src/snow/client.js');
+    resetOAuthToken();
+
+    await assert.rejects(
+      () =>
+        snowRequest('PATCH', '/api/now/table/incident/abc', config, {
+          authProfile: 'write',
+          body: { work_notes: 'test' },
+        }),
+      /desativada por política de segurança M2M/
+    );
+  });
 });

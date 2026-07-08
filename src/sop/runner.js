@@ -1,5 +1,5 @@
 /**
- * Executor de SOPs (Standard Operating Procedures) — Agente N2
+ * Executor de SOPs (Standard Operating Procedures) — Lino
  *
  * Conforme constitution.md Pilar 3 (Isolamento de Execução):
  * - Toda alteração em produção deve corresponder a um SOP registrado.

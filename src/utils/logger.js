@@ -1,5 +1,5 @@
 /**
- * Logger estruturado JSON — Utilitário do Agente N2
+ * Logger estruturado JSON — Utilitário do Lino
  *
  * Conforme constitution.md Pilar 1 (Falha Rápida e Ruidosa):
  * - Todos os logs incluem timestamp ISO-8601, nível, skill e mensagem.
